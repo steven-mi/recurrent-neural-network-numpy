@@ -3,7 +3,6 @@ A recurrent neural network implemented with numpy and python3
 
 ## Run
 ```
-cd network
 python3 numpy-rnn.py
 ```
 
@@ -11,3 +10,7 @@ python3 numpy-rnn.py
 * ```network_length``` - the length of the neural network
 * ```hidden_size``` - size of the hidden state
 * ```learning_rate``` 
+
+## Datasets
+* ```text.txt``` - some Shakespear
+* ```toy.txt``` - just a small text

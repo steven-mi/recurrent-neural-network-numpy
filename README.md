@@ -3,7 +3,7 @@ A recurrent neural network implemented with numpy and python3
 
 ## Run
 ```
-python3 numpy-rnn.py
+python3 rnn.py
 ```
 
 ## Hyperparameter

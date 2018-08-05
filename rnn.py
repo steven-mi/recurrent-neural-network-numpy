@@ -3,14 +3,9 @@ import numpy as np
 from translator import Translator
 from tqdm import tqdm
 
-# hyperparameter
-network_length = 29 * 2
-hidden_size = 200
-learning_rate = 1e-5
-iterations = 2000
-
 # data
 text = open('data/text.txt', 'r').read()
+#text = 'Hallo'
 text_length = len(text)
 characters = list(set(text))
 
@@ -18,6 +13,13 @@ characters = list(set(text))
 tl = Translator(characters)
 X = tl.to_one_hot(text)
 
+# hyperparameter
+network_length = X.shape[0]
+hidden_size = 100
+learning_rate = 1e-1
+iterations = 1000
+
+# initializing learnable parameter
 Wxh = np.random.randn(hidden_size, tl.characters_size) * 0.01
 Whh = np.random.randn(hidden_size, hidden_size) * 0.01
 Why = np.random.randn(tl.characters_size, hidden_size) * 0.01
@@ -59,20 +61,19 @@ def predict(X, Wxh, Whh, Why, hprev):
     
 print('starting learning process')
 ht = [np.zeros((hidden_size, 1))]
-loss = 0
-for ite in range(iterations):
+grad_squared_xh, grad_squared_hh, grad_squared_hy = np.zeros_like(Wxh), np.zeros_like(Whh), np.zeros_like(Why)
+for ite in tqdm(range(iterations)):
+    y = np.append(X[1:X.shape[0]],X[0])
+    loss, dWhh, dWxh, dWhy, ht = forward_and_backward(X, y, ht[-1])
+    # adagrad
+    grad_squared_xh += dWxh ** 2
+    grad_squared_hh += dWhh ** 2
+    grad_squared_hy += dWhy ** 2
+    Wxh -= dWxh / np.sqrt(grad_squared_xh + 1e-7) * learning_rate
+    Whh -= dWhh / np.sqrt(grad_squared_hh + 1e-7) * learning_rate
+    Why -= dWhy / np.sqrt(grad_squared_hy + 1e-7) * learning_rate
     if ite % 100 == 0:
-        sample = predict(X, Wxh, Whh, Why, ht[-1])
-        print('Sample at ' + str(ite) + ' with a loss of ' + str(loss))
-        print(sample)
-    for i in range(0, X.shape[0], network_length):
-        X_train = X[i:i + network_length]
-        y_train = X[i + 1:i + 1 + network_length]
-        if y_train.shape[0] != network_length:
-            y_train = np.append(y_train, X[0])
-        loss, dWhh, dWxh, dWhy, ht = forward_and_backward(X_train, y_train, ht[-1])
+        print('Iteration ', ite, ' and loss ', loss)
+        print('Sample at iteration')
+        print(predict(X, Wxh, Whh, Why, ht[-1]))
 
-        Wxh -= dWxh * learning_rate
-        Whh -= dWhh * learning_rate
-        Why -= dWhy * learning_rate
-        i += network_length

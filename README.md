@@ -1,9 +1,14 @@
 # recurrent-neural-network-numpy
 A recurrent neural network implemented with numpy and python3
 
-## Run
+## Run script normally 
 ```
-python3 rnn.py
+python3 network.py
+```
+
+## Run script in the background
+```
+nohup python3 -u network.py &
 ```
 
 ## Hyperparameter

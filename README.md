@@ -1,7 +1,7 @@
 # recurrent-neural-network-numpy
 A recurrent neural network implemented with numpy and python3
 
-## Run script normally 
+## Run script normally (old)
 ```
 python3 network.py
 ```
